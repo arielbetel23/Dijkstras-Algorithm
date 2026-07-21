@@ -14,6 +14,10 @@ public class Node {
          this.neighbors = new ArrayList<>();
      }
 
+     public void addNeighbor(Node target, int weight){
+         neighbors.add(new Edge(target, weight));
+     }
+
     public int getId() {
         return this.id;
     }
