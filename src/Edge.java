@@ -6,4 +6,13 @@ public class Edge {
         this.target = target;
         this.weight = weight;
     }
+
+    public Node getTarget() {
+        return target;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
 }
