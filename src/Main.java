@@ -21,6 +21,7 @@ public class Main {
         addEdge(f, g, 1);
 
         a.setDistance(0);
+        System.out.println(a);
     }
 
     static void addEdge(Node a, Node b, int weight) {

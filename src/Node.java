@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+public class Node implements Comparable<Node> {
     private int id;
     private int distance;
      private boolean visited;
@@ -12,6 +12,11 @@ public class Node {
          this.distance = Integer.MAX_VALUE;
          this.visited = false;
          this.neighbors = new ArrayList<>();
+     }
+
+     @Override
+     public int compareTo(Node other){
+        return Integer.compare(this.distance, other.distance);
      }
 
      public void addNeighbor(Node target, int weight){
