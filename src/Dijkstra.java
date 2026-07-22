@@ -7,10 +7,20 @@ public class Dijkstra {
         queue.add(source);
         while(!queue.isEmpty()){
             Node current = queue.poll();
-            if(!current.getVisited()){
-                current.setVisited(true);
+            if(current.getVisited()){
+                continue;
             }
-            
+            current.setVisited(true);
+
+            int newDistance;
+            for(int i = 0; i < current.getNeighbors().size(); i++){
+                newDistance = current.getDistance() + current.getNeighbors().get(i).getWeight();
+
+                if(newDistance < current.getNeighbors().get(i).getTarget().getDistance()){
+                    current.getNeighbors().get(i).getTarget().setDistance(newDistance);
+                    queue.add(current.getNeighbors().get(i).getTarget());
+                }
+            }
         }
     }    
 }
