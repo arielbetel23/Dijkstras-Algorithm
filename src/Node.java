@@ -70,6 +70,10 @@ public class Node implements Comparable<Node> {
     }
     
     public String toString(){
+        if(this.distance == Integer.MAX_VALUE){
+            return "id: " + this.id + " is unreachable from the source";
+        }
+
         Stack<Integer> stack = getPath();
         String path = "";
         while(!stack.isEmpty()){
