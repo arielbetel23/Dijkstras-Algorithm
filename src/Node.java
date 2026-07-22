@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Node implements Comparable<Node> {
     private int id;
@@ -56,8 +57,16 @@ public class Node implements Comparable<Node> {
         this.prevuis = node;
     }
 
-    public ArrayList<Node> getPath(){
-        
+    public Stack<Node> getPath(){
+        Stack<Node> stack = new Stack<>();
+        if(this.prevuis != null){
+            Node current = this.prevuis;
+            while(current.prevuis != null){
+                stack.push(current);
+                current = current.prevuis;
+            }
+        }
+        return stack;
     }
     
     public String toString(){
