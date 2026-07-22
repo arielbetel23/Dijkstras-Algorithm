@@ -24,19 +24,15 @@ public class Main {
 
         Dijkstra.run(a);
 
-        System.out.println(nodeIdAndDistance(a));
-        System.out.println(nodeIdAndDistance(b));
-        System.out.println(nodeIdAndDistance(c));
-        System.out.println(nodeIdAndDistance(d));
-        System.out.println(nodeIdAndDistance(e));
-        System.out.println(nodeIdAndDistance(f));
-        System.out.println(nodeIdAndDistance(g));
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+        System.out.println(d);
+        System.out.println(e);
+        System.out.println(f);
+        System.out.println(g);
     }
 
-    static String nodeIdAndDistance(Node node){
-        String ret = "id: " + node.getId() + ", distance: " + node.getDistance();
-        return ret;
-    }
 
     static void addEdge(Node a, Node b, int weight) {
         a.addNeighbor(b, weight);

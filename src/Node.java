@@ -55,4 +55,9 @@ public class Node implements Comparable<Node> {
     public void setPrevuis(Node node){
         this.prevuis = node;
     }
+
+    public String toString(){
+        String ret = "id: " + this.id + ", distance: " + this.distance;
+        return ret;
+    }
 }
