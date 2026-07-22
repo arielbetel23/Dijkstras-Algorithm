@@ -57,12 +57,12 @@ public class Node implements Comparable<Node> {
         this.prevuis = node;
     }
 
-    public Stack<Node> getPath(){
-        Stack<Node> stack = new Stack<>();
+    public Stack<Integer> getPath(){
+        Stack<Integer> stack = new Stack<>();
         if(this.prevuis != null){
             Node current = this.prevuis;
             while(current.prevuis != null){
-                stack.push(current);
+                stack.push(current.id);
                 current = current.prevuis;
             }
         }
@@ -70,7 +70,12 @@ public class Node implements Comparable<Node> {
     }
     
     public String toString(){
-        String ret = "id: " + this.id + ", distance: " + this.distance;
+        Stack<Integer> stack = getPath();
+        String path = "";
+        while(!stack.isEmpty()){
+            path += String.valueOf(stack.pop()) + " ";
+        }
+        String ret = "id: " + this.id + ", distance: " + this.distance + ", path: " + path;
         return ret;
     }
 }
