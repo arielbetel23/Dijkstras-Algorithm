@@ -61,7 +61,7 @@ public class Node implements Comparable<Node> {
         Stack<Integer> stack = new Stack<>();
         if(this.prevuis != null){
             Node current = this.prevuis;
-            while(current.prevuis != null){
+            while(current != null){
                 stack.push(current.id);
                 current = current.prevuis;
             }
