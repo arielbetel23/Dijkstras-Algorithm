@@ -31,7 +31,7 @@ public class Node implements Comparable<Node> {
         return this.distance;
     }
 
-    public boolean isVisited() {
+    public boolean getVisited() {
         return this.visited;
     }
 
