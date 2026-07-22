@@ -56,6 +56,10 @@ public class Node implements Comparable<Node> {
         this.prevuis = node;
     }
 
+    public ArrayList<Node> getPath(){
+        
+    }
+    
     public String toString(){
         String ret = "id: " + this.id + ", distance: " + this.distance;
         return ret;

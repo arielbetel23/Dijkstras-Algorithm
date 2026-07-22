@@ -18,6 +18,7 @@ public class Dijkstra {
 
                 if(newDistance < current.getNeighbors().get(i).getTarget().getDistance()){
                     current.getNeighbors().get(i).getTarget().setDistance(newDistance);
+                    current.getNeighbors().get(i).getTarget().setPrevuis(current);
                     queue.add(current.getNeighbors().get(i).getTarget());
                 }
             }
