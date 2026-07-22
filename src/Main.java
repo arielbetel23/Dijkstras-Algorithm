@@ -23,10 +23,17 @@ public class Main {
         a.setDistance(0);
 
         Dijkstra.run(a);
-        
+
+        System.out.println(nodeIdAndDistance(a));
+        System.out.println(nodeIdAndDistance(b));
+        System.out.println(nodeIdAndDistance(c));
+        System.out.println(nodeIdAndDistance(d));
+        System.out.println(nodeIdAndDistance(e));
+        System.out.println(nodeIdAndDistance(f));
+        System.out.println(nodeIdAndDistance(g));
     }
 
-    static String NodeIdAndDistance(Node node){
+    static String nodeIdAndDistance(Node node){
         String ret = "id: " + node.getId() + ", distance: " + node.getDistance();
         return ret;
     }

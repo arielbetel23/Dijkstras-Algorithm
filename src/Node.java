@@ -4,14 +4,16 @@ import java.util.List;
 public class Node implements Comparable<Node> {
     private int id;
     private int distance;
-     private boolean visited;
-     private List<Edge> neighbors;
+    private boolean visited;
+    private List<Edge> neighbors;
+    private Node prevuis;
 
      public Node(int id){
          this.id = id;
          this.distance = Integer.MAX_VALUE;
          this.visited = false;
          this.neighbors = new ArrayList<>();
+         this.prevuis = null;
      }
 
      @Override
@@ -45,5 +47,12 @@ public class Node implements Comparable<Node> {
 
     public void setVisited(boolean visited) {
         this.visited = visited;
+    }
+
+    public Node getPrevuis(){
+        return this.prevuis;
+    }
+    public void setPrevuis(Node node){
+        this.prevuis = node;
     }
 }
