@@ -21,7 +21,14 @@ public class Main {
         addEdge(f, g, 1);
 
         a.setDistance(0);
-        System.out.println(a);
+
+        Dijkstra.run(a);
+        
+    }
+
+    static String NodeIdAndDistance(Node node){
+        String ret = "id: " + node.getId() + ", distance: " + node.getDistance();
+        return ret;
     }
 
     static void addEdge(Node a, Node b, int weight) {
