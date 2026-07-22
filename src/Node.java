@@ -7,14 +7,14 @@ public class Node implements Comparable<Node> {
     private int distance;
     private boolean visited;
     private List<Edge> neighbors;
-    private Node prevuis;
+    private Node previous;
 
      public Node(int id){
          this.id = id;
          this.distance = Integer.MAX_VALUE;
          this.visited = false;
          this.neighbors = new ArrayList<>();
-         this.prevuis = null;
+         this.previous = null;
      }
 
      @Override
@@ -50,20 +50,20 @@ public class Node implements Comparable<Node> {
         this.visited = visited;
     }
 
-    public Node getPrevuis(){
-        return this.prevuis;
+    public Node getPrevious(){
+        return this.previous;
     }
-    public void setPrevuis(Node node){
-        this.prevuis = node;
+    public void setPrevious(Node node){
+        this.previous = node;
     }
 
     public Stack<Integer> getPath(){
         Stack<Integer> stack = new Stack<>();
-        if(this.prevuis != null){
-            Node current = this.prevuis;
+        if(this.previous != null){
+            Node current = this.previous;
             while(current != null){
                 stack.push(current.id);
-                current = current.prevuis;
+                current = current.previous;
             }
         }
         return stack;
@@ -75,7 +75,7 @@ public class Node implements Comparable<Node> {
         while(!stack.isEmpty()){
             path += String.valueOf(stack.pop()) + " ";
         }
-        String ret = "id: " + this.id + ", distance: " + this.distance + ", path: " + path;
+        String ret = "id: " + this.id + ", distance: " + this.distance + ", shortest path: " + path;
         return ret;
     }
 }
