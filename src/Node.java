@@ -3,35 +3,61 @@ import java.util.List;
 import java.util.Stack;
 
 public class Node implements Comparable<Node> {
-    private int id;
-    private int distance;
+    private long id;
+    private double lat;
+    private double lon;
+    private String name;
+    private double cost;
+    private double heuristic;
     private boolean visited;
     private List<Edge> neighbors;
     private Node previous;
 
-     public Node(int id){
+     public Node(long id, double lat, double lon, String name){
          this.id = id;
-         this.distance = Integer.MAX_VALUE;
+         this.lat = lat;
+         this.lon = lon;
+         this.name = name;
+         this.cost = Double.POSITIVE_INFINITY;
+         this.heuristic = -1;   // unset until the search first reaches this node
          this.visited = false;
          this.neighbors = new ArrayList<>();
          this.previous = null;
      }
 
+     // the queue orders by f = g + h, but the stored cost stays pure g.
+     // only nodes whose h has been filled in ever enter the queue.
      @Override
      public int compareTo(Node other){
-        return Integer.compare(this.distance, other.distance);
+        return Double.compare(this.cost + this.heuristic, other.cost + other.heuristic);
      }
 
-     public void addNeighbor(Node target, int weight){
-         neighbors.add(new Edge(target, weight));
+     public void addNeighbor(Node target, double length, double maxSpeed){
+         neighbors.add(new Edge(target, length, maxSpeed));
      }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public int getDistance() {
-        return this.distance;
+    public double getLat() {
+        return this.lat;
+    }
+
+    public double getLon() {
+        return this.lon;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public double getCost() {
+        return this.cost;
+    }
+
+    public double getHeuristic() {
+        return this.heuristic;
     }
 
     public boolean getVisited() {
@@ -42,8 +68,12 @@ public class Node implements Comparable<Node> {
         return this.neighbors;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
     }
 
     public void setVisited(boolean visited) {
@@ -57,8 +87,8 @@ public class Node implements Comparable<Node> {
         this.previous = node;
     }
 
-    public Stack<Integer> getPath(){
-        Stack<Integer> stack = new Stack<>();
+    public Stack<Long> getPath(){
+        Stack<Long> stack = new Stack<>();
         if(this.previous != null){
             Node current = this.previous;
             while(current != null){
@@ -68,18 +98,35 @@ public class Node implements Comparable<Node> {
         }
         return stack;
     }
-    
-    public String toString(){
-        if(this.distance == Integer.MAX_VALUE){
-            return "id: " + this.id + " is unreachable from the source";
-        }
 
-        Stack<Integer> stack = getPath();
-        String path = "";
-        while(!stack.isEmpty()){
-            path += String.valueOf(stack.pop()) + " ";
+    // the search minimises time, so cost holds seconds and says nothing about
+    // metres. the lengths live on the edges and have to be summed separately.
+    public double getPathLength(){
+        double total = 0;
+        for(Node current = this; current.previous != null; current = current.previous){
+            total += current.previous.lengthTo(current);
         }
-        String ret = "id: " + this.id + ", distance: " + this.distance + ", shortest path: " + path;
-        return ret;
+        return total;
+    }
+
+    public int getPathSize(){
+        int count = 0;
+        for(Node current = this; current != null; current = current.previous){
+            count++;
+        }
+        return count;
+    }
+
+    private double lengthTo(Node target){
+        double bestTime = Double.POSITIVE_INFINITY;
+        double length = 0;
+        for(Edge edge : this.neighbors){
+            // two ways can share a node pair, and the search took whichever was fastest
+            if(edge.getTarget() == target && edge.getTravelTime() < bestTime){
+                bestTime = edge.getTravelTime();
+                length = edge.getLength();
+            }
+        }
+        return length;
     }
 }
