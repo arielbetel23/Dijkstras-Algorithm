@@ -106,6 +106,49 @@ def build(elements):
     return nodes, edges, skipped
 
 
+def contract(edges, protected):
+    """Collapse every run of shape nodes into a single edge.
+
+    A node with exactly two distinct neighbours offers no routing choice, so the
+    chain through it can become one edge with the summed length and an effective
+    speed of total_length / total_time - which reproduces the original travel
+    time exactly. The snapped place nodes are protected so an origin or target
+    sitting mid-street cannot be contracted away.
+    """
+    adj = {}
+    for a, b, length, speed in edges:
+        adj.setdefault(a, []).append((b, length, speed))
+
+    kept = set(protected)
+    for node, out in adj.items():
+        if len({target for target, _, _ in out}) != 2:
+            kept.add(node)
+
+    contracted = []
+    for start in kept:
+        for target, length, speed in adj.get(start, []):
+            total_length = length
+            total_time = length / speed
+            prev, current = start, target
+
+            while current not in kept:
+                # a chain node has two distinct neighbours: the one behind us and
+                # the one ahead. parallel segments ahead all reach the same node,
+                # so the fastest of them is the one the search would have taken.
+                ahead = [(l, s, t) for t, l, s in adj[current] if t != prev]
+                best = min(ahead, key=lambda seg: seg[0] / seg[1])
+                total_length += best[0]
+                total_time += best[0] / best[1]
+                prev, current = current, best[2]
+
+            # a chain that loops straight back to its start is a self loop and
+            # can never be part of a shortest path
+            if current != start:
+                contracted.append((start, current, total_length, total_length / total_time))
+
+    return contracted
+
+
 def snap(places, nodes):
     """a geocoded coordinate is almost never a graph node, so each place takes
     the id of the nearest exported node instead."""
@@ -142,7 +185,10 @@ def write_graph(nodes, edges, places):
 
         file.write("\nEDGES\n")
         for first, second, length, speed in edges:
-            file.write(f"{first},{second},{length:.2f},{speed:.3f}\n")
+            # a contracted edge carries a whole chain, so its effective speed needs
+            # more decimals than a raw segment before the rounding shows up in the
+            # travel time
+            file.write(f"{first},{second},{length:.3f},{speed:.6f}\n")
 
         file.write("\nPLACES\n")
         for name, node_id in places.items():
@@ -156,7 +202,20 @@ def export(elements, places):
         sys.exit(1)
 
     print(f"  nodes: {len(nodes)}  edges: {len(edges)}  skipped pairs: {skipped}")
+
+    # snapping runs first so the two chosen nodes can be protected from contraction
     snapped = snap(places, nodes)
+    edges = contract(edges, set(snapped.values()))
+
+    surviving = {node for first, second, _, _ in edges for node in (first, second)}
+    missing = [name for name, node_id in snapped.items() if node_id not in surviving]
+    if missing:
+        print(f"    {', '.join(missing)} snapped onto a node with no roads")
+        sys.exit(1)
+
+    nodes = {node_id: nodes[node_id] for node_id in surviving}
+    print(f"  after contraction: {len(nodes)} nodes  {len(edges)} edges")
+
     write_graph(nodes, edges, snapped)
     return len(nodes), len(edges)
 
