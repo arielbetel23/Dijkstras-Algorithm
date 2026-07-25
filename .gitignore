@@ -27,3 +27,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+### Python
+__pycache__/
+exporter/osm_raw.json
+exporter/places.json
+exporter/graph.txt
