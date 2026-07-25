@@ -12,8 +12,8 @@ import sys
 import build_graph
 import fetch_osm
 import geocode
-from config import (PLACES_PATH, GRAPH_PATH, MAX_SEPARATION_KM,
-                    bounding_box, haversine_km, remove_generated)
+from config import (PLACES_PATH, GRAPH_PATH, MAX_SEPARATION_KM, SCRATCH_FILES,
+                    GENERATED_FILES, bounding_box, haversine_km, remove)
 
 
 def main():
@@ -23,10 +23,10 @@ def main():
 
     origin, destination = sys.argv[1], sys.argv[2]
 
-    print("[1/5] clearing old data")
-    remove_generated("removed")
+    print("[1/6] clearing old data")
+    remove(GENERATED_FILES, "removed")
 
-    print("[2/5] geocoding")
+    print("[2/6] geocoding")
     places = geocode.resolve([origin, destination])
     with open(PLACES_PATH, "w", encoding="utf-8") as file:
         json.dump(places, file, ensure_ascii=False, indent=2)
@@ -38,19 +38,23 @@ def main():
         print(f"  that is past the {MAX_SEPARATION_KM:.0f} km guard - the download would be very large")
         sys.exit(1)
 
-    print("[3/5] choosing the area")
+    print("[3/6] choosing the area")
     south, west, north, east = bounding_box(points)
     print(f"  box: {south},{west},{north},{east}")
 
-    print("[4/5] downloading roads")
+    print("[4/6] downloading roads")
     data = fetch_osm.download(south, west, north, east)
 
-    print("[5/5] building the graph")
+    print("[5/6] building the graph")
     node_count, edge_count = build_graph.export(data["elements"], places)
+
+    # the json files have done their job once graph.txt exists
+    print("[6/6] clearing scratch files")
+    remove(SCRATCH_FILES, "removed")
 
     print()
     print(f"wrote {GRAPH_PATH} with {node_count} nodes and {edge_count} edges")
-    print(f'run it with:  java Main {GRAPH_PATH} "{origin}" "{destination}"')
+    print(f'run it with:  java Main {GRAPH_PATH}, then type the two names')
     print("then clean up with:  python clean.py")
 
 

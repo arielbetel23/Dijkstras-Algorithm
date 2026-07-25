@@ -15,16 +15,19 @@ OSM_RAW_PATH = "osm_raw.json"
 PLACES_PATH = "places.json"
 GRAPH_PATH = "graph.txt"
 
-GENERATED_FILES = (OSM_RAW_PATH, PLACES_PATH, GRAPH_PATH)
+# the json files are scratch paper between steps. graph.txt is the deliverable
+# and has to survive the run, because it is what Java reads.
+SCRATCH_FILES = (OSM_RAW_PATH, PLACES_PATH)
+GENERATED_FILES = SCRATCH_FILES + (GRAPH_PATH,)
 
 
-def remove_generated(label):
-    """Delete leftovers from an earlier run.
+def remove(paths, label):
+    """Delete whichever of these files exist.
 
-    Without this a crashed run leaves files behind that a later step would read
-    without complaint, silently building a graph for the wrong area.
+    Leftovers are dangerous rather than untidy: a later step would read them
+    without complaint and silently build a graph for the wrong area.
     """
-    removed = [path for path in GENERATED_FILES if os.path.exists(path)]
+    removed = [path for path in paths if os.path.exists(path)]
     for path in removed:
         os.remove(path)
 
