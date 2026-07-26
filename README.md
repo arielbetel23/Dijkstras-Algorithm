@@ -72,6 +72,8 @@ python export.py "Kfar Saba" "Ra'anana"
 
 It geocodes both towns with Nominatim, draws a padded box around wherever they turned out to be, downloads every drivable road inside that box from the Overpass API, and writes the graph file. No API keys are needed, both services are free and open.
 
+This works anywhere in the world, but the two towns have to be near each other. The area downloaded grows with the square of the distance between them, so the exporter stops if they are more than 40 km apart(the limit is `MAX_SEPARATION_KM` in `config.py` if you want to push it). Neighbouring towns take a few seconds, a big city pair takes a couple of minutes and a much larger graph.
+
 Two things in there are worth knowing. OpenStreetMap does not store edges at all, it stores *ways*, which are ordered lists of points describing the shape of a road. So the exporter walks each way and turns every consecutive pair into an edge. And the `maxspeed` tag is missing on about 98% of the roads, so a default table keyed on the road class fills the gap. A missing speed must never become zero, because that would make the travel time infinite.
 
 After that, every chain of nodes with exactly two neighbours gets contracted into a single edge. Those nodes only describe the curve of the road and no decision is ever made at them, so collapsing them shrinks the graph by about 4x while the distance and the travel time come out exactly the same.
