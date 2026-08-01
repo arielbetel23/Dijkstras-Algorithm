@@ -1,9 +1,6 @@
 public class Geo {
     private static final double EARTH_RADIUS_M = 6371000.0;
 
-    // great-circle distance in metres. lat/lon are angles on a sphere, so plain
-    // euclidean distance on degrees would be wrong - a degree of longitude is
-    // shorter than a degree of latitude everywhere except the equator.
     public static double haversine(Node a, Node b){
         double lat1 = Math.toRadians(a.getLat());
         double lat2 = Math.toRadians(b.getLat());

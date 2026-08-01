@@ -99,8 +99,6 @@ public class Node implements Comparable<Node> {
         return stack;
     }
 
-    // the search minimises time, so cost holds seconds and says nothing about
-    // metres. the lengths live on the edges and have to be summed separately.
     public double getPathLength(){
         double total = 0;
         for(Node current = this; current.previous != null; current = current.previous){
@@ -121,7 +119,6 @@ public class Node implements Comparable<Node> {
         double bestTime = Double.POSITIVE_INFINITY;
         double length = 0;
         for(Edge edge : this.neighbors){
-            // two ways can share a node pair, and the search took whichever was fastest
             if(edge.getTarget() == target && edge.getTravelTime() < bestTime){
                 bestTime = edge.getTravelTime();
                 length = edge.getLength();

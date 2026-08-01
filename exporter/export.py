@@ -48,7 +48,6 @@ def main():
     print("[5/6] building the graph")
     node_count, edge_count = build_graph.export(data["elements"], places)
 
-    # the json files have done their job once graph.txt exists
     print("[6/6] clearing scratch files")
     remove(SCRATCH_FILES, "removed")
 

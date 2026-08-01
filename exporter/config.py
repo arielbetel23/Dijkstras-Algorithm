@@ -7,16 +7,12 @@ whichever two towns are asked for, so the exporter works for any pair.
 import math
 import os
 
-# Nominatim rejects the default user agent of http libraries, so this has to
-# identify the project. it is not a secret and is meant to be public.
 USER_AGENT = "dijkstra-astar-project/1.0 (student project)"
 
 OSM_RAW_PATH = "osm_raw.json"
 PLACES_PATH = "places.json"
 GRAPH_PATH = "graph.txt"
 
-# the json files are scratch paper between steps. graph.txt is the deliverable
-# and has to survive the run, because it is what Java reads.
 SCRATCH_FILES = (OSM_RAW_PATH, PLACES_PATH)
 GENERATED_FILES = SCRATCH_FILES + (GRAPH_PATH,)
 
@@ -37,13 +33,10 @@ def remove(paths, label):
         print(f"  {label}: nothing to remove")
     return removed
 
-# the box is padded past both towns on purpose: the fastest route often bows
-# outside the rectangle that just touches them, and a road clipped at the
-# boundary becomes a dead end that can make the target unreachable
+
 PADDING_FRACTION = 0.35
 MIN_PADDING_KM = 2.0
 
-# past this the Overpass response gets slow and huge. it is a guard, not a law.
 MAX_SEPARATION_KM = 40.0
 
 EARTH_RADIUS_M = 6371000.0

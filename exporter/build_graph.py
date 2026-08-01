@@ -12,8 +12,7 @@ from config import PLACES_PATH, OSM_RAW_PATH, GRAPH_PATH
 
 EARTH_RADIUS_M = 6371000.0
 
-# only ways a car can actually drive. footways, paths, steps and cycleways are
-# dropped, and so are proposed/construction roads that do not physically exist.
+
 DEFAULT_SPEED_KMH = {
     "motorway": 110, "motorway_link": 110,
     "trunk": 90, "trunk_link": 90,
@@ -82,9 +81,6 @@ def build(elements):
         speed_mps = resolve_speed_kmh(tags) / 3.6
         node_ids = element["nodes"]
 
-        # a way is an ordered list of node references, not an edge. the nodes in
-        # the middle only describe the road's shape, so every consecutive pair
-        # becomes its own edge and summed lengths follow the curve of the road.
         for first, second in zip(node_ids, node_ids[1:]):
             if first not in coords or second not in coords or first == second:
                 skipped += 1
@@ -132,17 +128,13 @@ def contract(edges, protected):
             prev, current = start, target
 
             while current not in kept:
-                # a chain node has two distinct neighbours: the one behind us and
-                # the one ahead. parallel segments ahead all reach the same node,
-                # so the fastest of them is the one the search would have taken.
+
                 ahead = [(l, s, t) for t, l, s in adj[current] if t != prev]
                 best = min(ahead, key=lambda seg: seg[0] / seg[1])
                 total_length += best[0]
                 total_time += best[0] / best[1]
                 prev, current = current, best[2]
 
-            # a chain that loops straight back to its start is a self loop and
-            # can never be part of a shortest path
             if current != start:
                 contracted.append((start, current, total_length, total_length / total_time))
 
@@ -185,9 +177,7 @@ def write_graph(nodes, edges, places):
 
         file.write("\nEDGES\n")
         for first, second, length, speed in edges:
-            # a contracted edge carries a whole chain, so its effective speed needs
-            # more decimals than a raw segment before the rounding shows up in the
-            # travel time
+
             file.write(f"{first},{second},{length:.3f},{speed:.6f}\n")
 
         file.write("\nPLACES\n")
@@ -203,7 +193,6 @@ def export(elements, places):
 
     print(f"  nodes: {len(nodes)}  edges: {len(edges)}  skipped pairs: {skipped}")
 
-    # snapping runs first so the two chosen nodes can be protected from contraction
     snapped = snap(places, nodes)
     edges = contract(edges, set(snapped.values()))
 

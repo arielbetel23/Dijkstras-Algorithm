@@ -11,25 +11,17 @@ public class GraphLoader {
     private static final String EDGES = "EDGES";
     private static final String PLACES = "PLACES";
 
-    // the fastest speed seen anywhere in the loaded graph, needed by the heuristic.
-    // finding it here makes it the one-time pass at load the plan calls for.
     private static double maxSpeed;
 
     public static double getMaxSpeed(){
         return maxSpeed;
     }
 
-    /** Wires the nodes together and returns only the place lookup.
-     *
-     * The id map is local on purpose. Once the edges are attached, the graph is
-     * the nodes pointing at each other and nothing else needs to hold it.
-     */
     public static Map<String, Node> load(String path) throws IOException {
         maxSpeed = 0;
         Map<Long, Node> byId = new HashMap<>();
         Map<String, Long> placeIds = new HashMap<>();
-        // edges are held back until every node exists, since an edge line names two
-        // nodes by id and both objects have to be there before they can be wired
+
         List<String[]> edgeRows = new ArrayList<>();
         String section = null;
         int lineNumber = 0;
@@ -52,7 +44,6 @@ public class GraphLoader {
                 throw new IOException("line " + lineNumber + ": data before any section header");
             }
 
-            // the -1 limit keeps trailing empty fields, so an unnamed node still splits into 4
             String[] parts = line.split(",", -1);
 
             if(section.equals(NODES)){

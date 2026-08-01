@@ -32,7 +32,6 @@ public class Main {
             return;
         }
 
-        // control run: a ceiling of 0 forces h = 0, so this is plain Dijkstra
         Dijkstra.run(places.get(origin), places.get(destination), 0);
         int dijkstraSettled = Dijkstra.getSettledCount();
         Node target = places.get(destination);
@@ -46,7 +45,6 @@ public class Main {
         double minutes = target.getCost() / 60.0;
         int pathSize = target.getPathSize();
 
-        // reloaded because a node keeps its cost and visited flag from the previous run
         places = GraphLoader.load(path);
         Dijkstra.run(places.get(origin), places.get(destination), GraphLoader.getMaxSpeed());
         int aStarSettled = Dijkstra.getSettledCount();
@@ -67,7 +65,6 @@ public class Main {
                    && Math.abs(aStarTarget.getCost() - target.getCost()) < 1e-9));
     }
 
-    // a real route runs to hundreds of unnamed ids, so only the ends are printed
     private static String preview(Node target){
         List<Long> ids = new ArrayList<>();
         Stack<Long> stack = target.getPath();

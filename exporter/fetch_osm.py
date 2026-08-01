@@ -16,8 +16,7 @@ OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
 
 def build_query(south, west, north, east):
-    # the (._;>;) line recurses from the ways down to every node they reference.
-    # without it the response holds way definitions whose node ids point at nothing.
+
     return f"""
 [out:json][timeout:180];
 way["highway"]({south},{west},{north},{east});

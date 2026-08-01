@@ -15,7 +15,6 @@ from config import USER_AGENT, PLACES_PATH
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
-# the usage policy caps this service at one request per second
 REQUEST_DELAY_SECONDS = 1.1
 
 
