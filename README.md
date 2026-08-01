@@ -64,9 +64,10 @@ Blank lines and lines starting with `#` are ignored. Every road appears twice in
 
 ## The Python exporter
 
-The exporter lives in `exporter/` and it is a separate, disposable tool. It runs once and produces `graph.txt`.
+The exporter lives in `exporter/` and it is a separate, disposable tool. It runs once and produces `graph.txt`. Its only dependency is `requests`:
 
 ```
+pip install requests
 python export.py "Kfar Saba" "Ra'anana"
 ```
 
@@ -92,7 +93,13 @@ java -cp out Main exporter/graph.txt
 
 Then type the origin, press Enter, type the destination, press Enter. When you are done, `python clean.py` removes the generated files.
 
-There is also `test_graph.txt`, a hand written 5 node graph whose answer can be worked out on paper. Run it with `Start` and `End` in order to check everything works without downloading anything.
+There is also `test_graph.txt`, a hand written 5 node graph whose answer can be worked out on paper.
+
+```
+java -cp out Main test_graph.txt
+```
+
+Type `Start` and `End` in order to check everything works without downloading anything.
 
 ## Results
 
@@ -113,7 +120,7 @@ Same route:               true
 | Even Yehuda → Netanya | 9.63 km | 7,829 | 2,960 | 62.2% |
 | Tel Aviv → Netanya | 32.09 km | 54,055 | 21,314 | 60.6% |
 
-Both algorithms return the identical route every time. A* just gets there after looking at a fraction of the map.
+`Same route` checks that both runs agree on total path length and total cost, which in practice means the same route. A* just gets there after looking at a fraction of the map.
 
 ## What this is not
 
